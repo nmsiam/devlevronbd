@@ -1,0 +1,301 @@
+﻿<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEV XONEX // Final Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #010409;
+            --primary-color: #00ff8c;
+            --text-color: #c9d1d9;
+            --glow-color: rgba(0, 255, 140, 0.6);
+            --border-color: rgba(0, 255, 140, 0.3);
+            --font-mono: 'Share Tech Mono', monospace;
+            --font-body: 'Hind Siliguri', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+        }
+        #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
+
+        /* --- Welcome Screen --- */
+        #welcome-screen {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100vh;
+            background: #000; z-index: 1000;
+            display: flex; justify-content: center; align-items: center;
+            flex-direction: column;
+            transition: opacity 1s ease-out, visibility 1s ease-out;
+        }
+        #welcome-canvas { position: absolute; top: 0; left: 0; }
+        .welcome-content {
+            z-index: 2; text-align: center;
+            opacity: 0; transform: scale(0.9);
+            animation: welcome-fade-in 1s 1s forwards;
+        }
+        @keyframes welcome-fade-in { to { opacity: 1; transform: scale(1); } }
+        
+        .welcome-image {
+            width: 130px; height: 130px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            object-fit: cover;
+            margin-bottom: 20px;
+            box-shadow: 0 0 25px var(--glow-color);
+            animation: pulse-welcome 2s infinite ease-in-out;
+        }
+        @keyframes pulse-welcome { 50% { box-shadow: 0 0 40px var(--glow-color); } }
+
+        .welcome-terminal {
+            font-family: var(--font-mono); color: var(--primary-color);
+            font-size: 1.1rem; text-shadow: 0 0 5px var(--glow-color);
+        }
+        .typing-cursor { display: inline-block; background: var(--primary-color); width: 10px; height: 1.1rem; animation: blink 0.7s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* --- Main Content --- */
+        #main-content {
+            display: none; padding: 20px;
+            max-width: 800px; margin: auto;
+        }
+
+        /* --- UI Window Style --- */
+        .ui-window {
+            border: 1px solid var(--border-color);
+            background: rgba(1, 4, 9, 0.8);
+            padding: 30px; margin-bottom: 40px;
+            position: relative; backdrop-filter: blur(5px);
+            opacity: 0; animation: ui-reveal 1s forwards;
+            overflow: hidden; /* For border animation */
+        }
+        @keyframes ui-reveal {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .ui-window::before { /* Animated Border */
+            content: ''; position: absolute;
+            top: 0; left: -100%; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-color));
+            animation: scan-border 4s linear infinite;
+        }
+        @keyframes scan-border {
+            0% { left: -100%; } 100% { left: 100%; }
+        }
+        
+        /* --- Hero Section --- */
+        .hero { text-align: center; padding: 40px 0; }
+        .profile-image {
+            width: 150px; height: 150px;
+            border-radius: 50%; border: 3px solid var(--primary-color);
+            animation: pulse-main 3s infinite ease-in-out;
+        }
+        @keyframes pulse-main { 50% { transform: scale(1.05); } }
+        
+        .hero-title {
+            font-family: var(--font-mono); font-size: 3rem;
+            color: #fff; margin: 20px 0 10px;
+            position: relative;
+            animation: glitch-title 3s infinite;
+        }
+        @keyframes glitch-title {
+            2%, 64% { transform: translate(2px,0) skew(0deg); }
+            4%, 60% { transform: translate(-2px,0) skew(0deg); }
+            62% { transform: translate(0,0) skew(5deg); }
+        }
+        .subtitle { font-size: 1.2rem; color: var(--primary-color); }
+        
+        h2 {
+            font-family: var(--font-mono); font-size: 1.8rem;
+            color: var(--primary-color); margin-bottom: 25px;
+            text-align: center; border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .service-grid {
+            display: flex; justify-content: center;
+            gap: 30px; flex-wrap: wrap;
+        }
+        .service-card { text-align: center; flex-basis: 250px; }
+        .service-card i {
+            font-size: 3rem; color: var(--primary-color); margin-bottom: 15px;
+            transition: transform 0.3s, text-shadow 0.3s;
+        }
+        .service-card:hover i { transform: scale(1.1); text-shadow: 0 0 15px var(--glow-color); }
+        .service-card h3 { font-size: 1.5rem; margin-bottom: 10px; }
+        
+        /* --- Animated Tech Skills Grid --- */
+        .tech-skills-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px; text-align: center;
+        }
+        .skill-item {
+            border: 1px solid var(--border-color); padding: 20px 10px;
+            font-family: var(--font-mono); font-size: 1.1rem;
+            transition: all 0.3s ease;
+            animation: bob-idle 3s infinite ease-in-out;
+        }
+        @keyframes bob-idle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .skill-item:hover {
+            background-color: var(--primary-color); color: #000;
+            box-shadow: 0 0 20px var(--glow-color);
+            transform: translateY(-5px) scale(1.05); /* Override bobbing on hover */
+            animation: none; /* Stop bobbing on hover */
+        }
+
+        .contact-section { text-align: center; }
+        .cta-button {
+            font-family: var(--font-mono); font-size: 1.1rem; color: var(--primary-color);
+            background: transparent; border: 2px solid var(--primary-color);
+            padding: 15px 35px; text-decoration: none; display: inline-block;
+            margin-top: 20px; position: relative; overflow: hidden;
+            transition: color 0.4s ease-in-out;
+        }
+        .cta-button::before {
+            content: ''; position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%; background: var(--primary-color);
+            z-index: -1; transition: left 0.4s ease-in-out;
+        }
+        .cta-button:hover { color: #000; }
+        .cta-button:hover::before { left: 0; }
+        footer { text-align: center; padding: 20px; font-family: var(--font-mono); color: #888; }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+
+    <div id="welcome-screen">
+        <canvas id="welcome-canvas"></canvas>
+        <div class="welcome-content">
+            <img src="levron-logo.png" alt="Dev Levron Welcome Image" class="welcome-image">
+            <p id="welcome-terminal" class="welcome-terminal"></p>
+        </div>
+    </div>
+    
+    <div id="main-content">
+        <header class="hero ui-window">
+            <img src="levron-logo.png" alt="Dev Xonex Profile" class="profile-image">
+            <h1 class="hero-title">DEV LEVRON</h1>
+            <p class="subtitle">ডিজিটাল ক্রিয়েটর ও উদ্ভাবক</p>
+        </header>
+
+        <section class="ui-window">
+            <h2>>> ABOUT_ME</h2>
+            <p>স্বাগতম। আমি একজন প্রযুক্তিপ্রেমী ডিজিটাল ক্রিয়েটর। আমার কাজ হলো আইডিয়াকে কোড এবং ডিজাইনের মাধ্যমে জীবন্ত করে তোলা। আমি ক্লিন এবং কার্যকরী সমাধান তৈরি করতে ভালোবাসি যা ব্যবহারকারীর অভিজ্ঞতাকে সহজ করে।</p>
+        </section>
+
+        <section class="ui-window">
+            <h2>>> CORE SERVICES</h2>
+            <div class="service-grid">
+                <div class="service-card">
+                    <i class="fas fa-mobile-screen-button"></i>
+                    <h3>App Development</h3>
+                    <p>iOS ও Android এর জন্য দ্রুতগতির এবং আকর্ষণীয় ইউজার ইন্টারফেস সহ অ্যাপ তৈরি।</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-laptop-code"></i>
+                    <h3>Web Development</h3>
+                    <p>যেকোনো ডিভাইসের জন্য আধুনিক, রেসপন্সিভ এবং সার্চ ইঞ্জিন অপটিমাইজড ওয়েবসাইট।</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="ui-window">
+            <h2>>> TECHNICAL SKILLS</h2>
+            <div class="tech-skills-grid">
+                <div class="skill-item">HTML</div>
+                <div class="skill-item">CSS</div>
+                <div class="skill-item">Firebase</div>
+                <div class="skill-item">Copy Pest</div>
+                <div class="skill-item">And Other...</div>
+            </div>
+        </section>
+
+        <section class="ui-window contact-section">
+            <h2>>> INITIATE_CONTACT</h2>
+            <a href="https://t.me/levron_bd" target="_blank" class="cta-button">কোন কিছু লাগলে এখানে ক্লিক করেন</a>
+        </section>
+
+        <footer class="ui-window">
+            <p>All Copyright Reserved By DEV LEVRON © <span id="year"></span></p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // --- Welcome Screen Logic ---
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const welcomeCanvas = document.getElementById('welcome-canvas');
+        const ctx = welcomeCanvas.getContext('2d');
+        welcomeCanvas.width = window.innerWidth;
+        welcomeCanvas.height = window.innerHeight;
+
+        const letters = 'XONEX_DEV_0101';
+        const fontSize = 16;
+        const columns = welcomeCanvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+        let rainInterval;
+
+        function drawRain() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, welcomeCanvas.width, welcomeCanvas.height);
+            ctx.fillStyle = '#00ff8c';
+            ctx.font = fontSize + 'px monospace';
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > welcomeCanvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        rainInterval = setInterval(drawRain, 33);
+        
+        const terminalText = document.getElementById('welcome-terminal');
+        const quote = '> "এবং অবশ্যই তোমার পালনকর্তা তোমাকে এত দেবেন যে, তুমি খুশী হয়ে যাবে।"';
+        let i = 0;
+        function typeQuote() {
+            if (i < quote.length) {
+                terminalText.innerHTML = quote.substring(0, i + 1) + '<span class="typing-cursor"></span>';
+                i++;
+                setTimeout(typeQuote, 50);
+            } else {
+                terminalText.querySelector('.typing-cursor').style.display = 'none';
+                setTimeout(() => {
+                    welcomeScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        welcomeScreen.style.display = 'none';
+                        clearInterval(rainInterval);
+                        document.getElementById('main-content').style.display = 'block';
+                    }, 1000);
+                }, 1500);
+            }
+        }
+        setTimeout(typeQuote, 1500);
+        
+        // --- Particles.js Config for Main Page ---
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#00ff8c" }, "shape": { "type": "circle" },
+                "opacity": { "value": 0.4, "random": true }, "size": { "value": 2, "random": true },
+                "line_linked": { "enable": true, "distance": 150, "color": "#00ff8c", "opacity": 0.2, "width": 1 },
+                "move": { "enable": true, "speed": 2, "direction": "none", "random": true, "out_mode": "out" }
+            },
+            "interactivity": { "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" } } },
+            "retina_detect": true
+        });
+
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
